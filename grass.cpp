@@ -3,27 +3,29 @@
 
 #include "grass.h"
 
+Grass_robot robot;
+
 Grass_robot::Grass_robot ()
-:
-    mtrs
-    {
-        yh::rec::Btn7971b(5, 13),
-        yh::rec::Btn7971b(11, 10),
-        yh::rec::Btn7971b(6, 12),
-        yh::rec::Btn7971b(3, 2)
-    },
-    encoders
-    {
-        yh::rec::Encoder_2ch_pulse(A0, A1),
-        yh::rec::Encoder_2ch_pulse(A2, A3),
-        yh::rec::Encoder_2ch_pulse(4, 7),
-        yh::rec::Encoder_2ch_pulse(8, 9)
-    },
-    uts_right (yh::rec::Us_016(NC_PINNO, A11)),
-    uts_back  (yh::rec::Us_016(NC_PINNO, A10))
 {
     //
 }
+
+yh::rec::Btn7971b Grass_robot::mtrs [4] {
+    yh::rec::Btn7971b(5, 13),
+    yh::rec::Btn7971b(11, 10),
+    yh::rec::Btn7971b(6, 12),
+    yh::rec::Btn7971b(3, 2)
+};
+
+yh::rec::Encoder_2ch_pulse Grass_robot::encoders [4] {
+    yh::rec::Encoder_2ch_pulse(A0, A1),
+    yh::rec::Encoder_2ch_pulse(A2, A3),
+    yh::rec::Encoder_2ch_pulse(4, 7),
+    yh::rec::Encoder_2ch_pulse(8, 9)
+};
+
+yh::rec::Us_016 Grass_robot::uts_right (yh::rec::Us_016(NC_PINNO, A11));
+yh::rec::Us_016 Grass_robot::uts_back (yh::rec::Us_016(NC_PINNO, A10));
 
 void Grass_robot::begin () {
     mtrs[0].begin();
@@ -59,11 +61,15 @@ void Grass_robot::polar_control (const int16_t dir, const int16_t spd, const int
     const uint8_t oldSREG = SREG;
     noInterrupts();
     // set speeds
-    mtrs[0].set_spd(target_spds[0] = temp_spds[0]);
-    mtrs[1].set_spd(target_spds[1] = temp_spds[1]);
-    mtrs[2].set_spd(target_spds[2] = temp_spds[2]);
-    mtrs[3].set_spd(target_spds[3] = temp_spds[3]);
+    target_spds[0] = temp_spds[0];
+    target_spds[1] = temp_spds[1];
+    target_spds[2] = temp_spds[2];
+    target_spds[3] = temp_spds[3];
     SREG = oldSREG;
+    mtrs[0].set_spd(temp_spds[0]);
+    mtrs[1].set_spd(temp_spds[1]);
+    mtrs[2].set_spd(temp_spds[2]);
+    mtrs[3].set_spd(temp_spds[3]);
 }
 
 void Grass_robot::rect_control (const int16_t x, const int16_t y, const int16_t rotation) {
@@ -84,11 +90,15 @@ void Grass_robot::rect_control (const int16_t x, const int16_t y, const int16_t 
     const uint8_t oldSREG = SREG;
     noInterrupts();
     // set speeds
-    mtrs[0].set_spd(target_spds[0] = temp_spds[0]);
-    mtrs[1].set_spd(target_spds[1] = temp_spds[1]);
-    mtrs[2].set_spd(target_spds[2] = temp_spds[2]);
-    mtrs[3].set_spd(target_spds[3] = temp_spds[3]);
+    target_spds[0] = temp_spds[0];
+    target_spds[1] = temp_spds[1];
+    target_spds[2] = temp_spds[2];
+    target_spds[3] = temp_spds[3];
     SREG = oldSREG;
+    mtrs[0].set_spd(temp_spds[0]);
+    mtrs[1].set_spd(temp_spds[1]);
+    mtrs[2].set_spd(temp_spds[2]);
+    mtrs[3].set_spd(temp_spds[3]);
 }
 
 #endif // #ifndef GRASS_CPP
