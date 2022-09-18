@@ -27,6 +27,8 @@ yh::rec::Encoder_2ch_pulse Grass_robot::encoders [4] {
 yh::rec::Us_016 Grass_robot::uts_right (yh::rec::Us_016(NC_PINNO, A11));
 yh::rec::Us_016 Grass_robot::uts_back (yh::rec::Us_016(NC_PINNO, A10));
 
+yh::rec::Qmc5883l Grass_robot::compass;
+
 void Grass_robot::begin () {
     mtrs[0].begin();
     mtrs[1].begin();
@@ -40,13 +42,15 @@ void Grass_robot::begin () {
 
     uts_right.begin();
     uts_back.begin();
+
+    compass.begin();
 }
 
 void Grass_robot::set_motor (const uint8_t motor_num, const int16_t spd) {
     mtrs[motor_num].set_spd(target_spds[motor_num] = spd);
 }
 
-void Grass_robot::polar_control (const int16_t dir, const int16_t spd, const int16_t rotation) {
+void Grass_robot::polar_ctrl (const int16_t dir, const int16_t spd, const int16_t rotation) {
     int16_t temp_spds [4];
     // resolve vectors
     temp_spds[0] = spd * sin((dir + 45) * DEG_TO_RAD);
@@ -72,7 +76,7 @@ void Grass_robot::polar_control (const int16_t dir, const int16_t spd, const int
     mtrs[3].set_spd(temp_spds[3]);
 }
 
-void Grass_robot::rect_control (const int16_t x, const int16_t y, const int16_t rotation) {
+void Grass_robot::rect_ctrl (const int16_t x, const int16_t y, const int16_t rotation) {
     int16_t temp_spds [4];
     // resolve vectors
     // temp_spds[0] = x * sin(45) + y * sin(45);
@@ -99,6 +103,27 @@ void Grass_robot::rect_control (const int16_t x, const int16_t y, const int16_t 
     mtrs[1].set_spd(temp_spds[1]);
     mtrs[2].set_spd(temp_spds[2]);
     mtrs[3].set_spd(temp_spds[3]);
+}
+
+Polar_cord Grass_robot::uts_dist_to_polar_dist (const uint16_t right_cord, const uint16_t back_cord) {
+    int delta_x = uts_right.read_dist_cm() - right_cord;
+    int delta_y = back_cord - uts_back.read_dist_cm();
+    int16_t angle = static_cast<int16_t>(atan2(delta_x, delta_y) * RAD_TO_DEG);
+    if (angle < 0) {
+        angle += 360;
+    }
+    return Polar_cord {angle, static_cast<int16_t>(sqrt_int(delta_x * delta_x + delta_y * delta_y))};
+}
+
+uint16_t Grass_robot::sqrt_int (const uint32_t x) {
+    for (uint16_t i = 0; ((i + 1) != 0); i++) {
+        const uint32_t sqed_val = i * i;
+        if (x == sqed_val) {
+            return i;
+        } else if (x < sqed_val) {
+            return i - 1;
+        }
+    }
 }
 
 #endif // #ifndef GRASS_CPP
