@@ -24,8 +24,6 @@ class Grass_robot {
         //
     public:
         //
-        Grass_robot ();
-        //
         static void begin ();
         //
         static void set_motor (const uint8_t mtr_num, const int16_t spd);
@@ -38,7 +36,14 @@ class Grass_robot {
         // square root of an integer
         static uint16_t sqrt_int (const uint32_t x);
 
-        //
+        // backwards compatibility use only
+
+        // convert polar coordinates of direction and speed (magnitude) into speeds of 4 motors
+        static void polar_control (const int16_t dir, const int16_t spd, const int16_t rotation) { polar_ctrl(dir, spd, rotation); }
+        // convert rectangular components of x(horizontal) and y(vertical) into speeds of 4 motors
+        static void rect_control (const int16_t x, const int16_t y, const int16_t rotation) { rect_ctrl(x, y, rotation); }
+
+        // target speed of each motor for PID tuning (if needed)
         static int16_t target_spds [4];
         // objects
         static yh::rec::Btn7971b mtrs [4];

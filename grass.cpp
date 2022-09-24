@@ -5,10 +5,7 @@
 
 Grass_robot robot;
 
-Grass_robot::Grass_robot ()
-{
-    //
-}
+int16_t Grass_robot::target_spds [4] {0, 0, 0, 0};
 
 yh::rec::Btn7971b Grass_robot::mtrs [4] {
     yh::rec::Btn7971b(5, 13),
@@ -44,6 +41,12 @@ void Grass_robot::begin () {
     uts_back.begin();
 
     compass.begin();
+    compass.range_x = 1785;
+    compass.min_x = -1127;
+    compass.range_y = 1899;
+    compass.min_y = -1176;
+    compass.range_z = 125;
+    compass.min_z = -282;
 }
 
 void Grass_robot::set_motor (const uint8_t motor_num, const int16_t spd) {
