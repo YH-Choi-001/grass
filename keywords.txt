@@ -1,8 +1,27 @@
-Polar_cord			KEYWORD1
-Rect_cord			KEYWORD1
-Grass_robot			KEYWORD1
+Polar_cord				KEYWORD1
+Rect_cord				KEYWORD1
+Grass_robot				KEYWORD1
 
-angle				KEYWORD2
-dist				KEYWORD2
-x					KEYWORD2
-y					KEYWORD2
+begin					KEYWORD2
+set_motor				KEYWORD2
+polar_ctrl				KEYWORD2
+rect_ctrl				KEYWORD2
+uts_dist_to_polar_dist	KEYWORD2
+sqrt_int				KEYWORD2
+
+polar_control			KEYWORD2
+rect_control			KEYWORD2
+
+angle					LITERAL2
+dist					LITERAL2
+x						LITERAL2
+y						LITERAL2
+
+target_spds				LITERAL2
+mtrs					LITERAL2
+encoders				LITERAL2
+uts_right				LITERAL2
+uts_back				LITERAL2
+compass					LITERAL2
+
+robot					LITERAL2
