@@ -11,6 +11,8 @@ yh::rec::Hc_sr04 uts [4] {
 volatile uint8_t dists [4];
 volatile uint8_t idx;
 
+volatile bool inc_trend;
+
 void rx (int len) {
     const uint8_t rx_byte = Wire.read();
     if (rx_byte >= 'w' && rx_byte <= 'z') {
@@ -25,6 +27,19 @@ void tx () {
         Wire.write(dists[i]);
     }
     idx = 0;
+    uint8_t temp = OCR1A;
+    if (inc_trend) {
+        temp += 15;
+        if (temp == 255) {
+            inc_trend = false;
+        }
+    } else {
+        temp -= 15;
+        if (temp == 0) {
+            inc_trend = true;
+        }
+    }
+    OCR1A = temp;
 }
 
 unsigned long prev_time;
@@ -32,7 +47,9 @@ unsigned long prev_time;
 void setup () {
     DDRB |= (1 << 0);
     DDRB |= (1 << 1);
+    OCR1A = 0;
     TCCR1A |= (1 << COM1A1);
+    inc_trend = true;
     uts[0].begin();
     uts[1].begin();
     uts[2].begin();
@@ -81,7 +98,7 @@ void loop () {
         }
     }
     const unsigned long curr_time = millis();
-    if ((curr_time - prev_time) > 350) {
+    if ((curr_time - prev_time) > 400) {
         PINB |= (1 << 0);
         prev_time = curr_time;
     }
